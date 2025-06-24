@@ -83,23 +83,9 @@ The full project includes over 60 pages of documentation, covering:
 - Normalization examples  
 - Query explanations with results
 
----
 
-## 📦 Sample ER Diagram
 
-> *(Add image or link to ER diagram here if available)*
 
----
 
-## 📌 Author
 
-**Maria-Rebecca Edu**  
-Computer Science Student, University of Bucharest  
-GitHub: [@mariarebeccaa](https://github.com/mariarebeccaa)
-
----
-
-## 📝 License
-
-This project is created for academic use and educational purposes.
 
