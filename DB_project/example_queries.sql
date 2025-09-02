@@ -32,12 +32,12 @@ FROM (
 	FROM produs )aux  
 WHERE aux.lungime > 8; 
 
---Subcererea nesincronizat? este realizat? în clauza FROM + functie prelucrare siruri de caractere LENGTH : E) 
+--Subcererea nesincronizat? este realizat? Ã®n clauza FROM + functie prelucrare siruri de caractere LENGTH : E) 
 
 
 
 
---12.3 ENUNT:S? se afi?eze ID-ul clientului, num?rul total de comenzi plasate în anul 2024 ?i suma total? a comenzilor acestuia. Se vor afi?a doar clien?ii care au plasat mai mult de o comanda ?i a c?ror sum? total? a comenzilor este mai mare decât media sumelor comenzilor tuturor clien?ilor din anul 2024. 
+--12.3 ENUNT:S? se afi?eze ID-ul clientului, num?rul total de comenzi plasate Ã®n anul 2024 ?i suma total? a comenzilor acestuia. Se vor afi?a doar clien?ii care au plasat mai mult de o comanda ?i a c?ror sum? total? a comenzilor este mai mare decÃ¢t media sumelor comenzilor tuturor clien?ilor din anul 2024. 
 --Satisface cerinta c)
 
 SELECT  
@@ -68,7 +68,7 @@ HAVING
 
 
 
---12.4 ENUNT: S? se afi?eze ID-ul produsului, numele produsului, numele categoriei din care face parte fiecare produs, cantitatea disponibil? din stoc (înlocuind valorile NULL cu 0), ?i un mesaj care indic? dac? produsul este "Stoc disponibil" sau "Stoc epuizat". Rezultatele vor fi ordonate descresc?tor dup? cantitatea disponibil?. 
+--12.4 ENUNT: S? se afi?eze ID-ul produsului, numele produsului, numele categoriei din care face parte fiecare produs, cantitatea disponibil? din stoc (Ã®nlocuind valorile NULL cu 0), ?i un mesaj care indic? dac? produsul este "Stoc disponibil" sau "Stoc epuizat". Rezultatele vor fi ordonate descresc?tor dup? cantitatea disponibil?. 
 --Satisface cerinta d)
  
 SELECT  
@@ -84,7 +84,7 @@ ORDER BY NVL(p.cantitate_disponibila, 0) DESC;
 
 
 
---12.5 ENUNT: S? se afiseze numele produsului transformat în majuscule, lungimea numelui produsului, cantitatea comandat? ?i un mesaj "Cantitate mare" sau "Cantitate mic?" în func?ie de valoarea cantit??ii comandate (mai mare sau egal? cu 20 sau mai mic? de 20) pentru comenzile din anul 2024. De asemenea, s? se afiseze ultima zi a lunii din care face parte data comenzii ?i s? fie utilizat un bloc de cerere WITH. 
+--12.5 ENUNT: S? se afiseze numele produsului transformat Ã®n majuscule, lungimea numelui produsului, cantitatea comandat? ?i un mesaj "Cantitate mare" sau "Cantitate mic?" Ã®n func?ie de valoarea cantit??ii comandate (mai mare sau egal? cu 20 sau mai mic? de 20) pentru comenzile din anul 2024. De asemenea, s? se afiseze ultima zi a lunii din care face parte data comenzii ?i s? fie utilizat un bloc de cerere WITH. 
 ---Satisface cerintele e) si f)
 
 WITH Produs_Comenzi_2024 AS (  
@@ -112,17 +112,17 @@ FROM Produs_Comenzi_2024 pc
 ORDER BY pc.nume_produs ASC; 
 
  
---Func?ii pe ?iruri de caractere: UPPER pentru transformarea numelui produsului în majuscule; LENGTH pentru a calcula lungimea numelui produsului 
+--Func?ii pe ?iruri de caractere: UPPER pentru transformarea numelui produsului Ã®n majuscule; LENGTH pentru a calcula lungimea numelui produsului 
 --Func?ii pe date calendaristice: LAST_DAY pentru a afi?a ultima zi a lunii din data comenzii; TO_CHAR 
---Expresie CASE: utilizat? pentru a genera un mesaj despre cantitatea comandat? (mare sau mic?) în func?ie de valoarea acesteia 
---Bloc WITH: blocul de cerere WITH este utilizat pentru a organiza ?i simplifica selec?ia datelor înainte de a le prelucra ?i afi?a în cererea principal?. 
+--Expresie CASE: utilizat? pentru a genera un mesaj despre cantitatea comandat? (mare sau mic?) Ã®n func?ie de valoarea acesteia 
+--Bloc WITH: blocul de cerere WITH este utilizat pentru a organiza ?i simplifica selec?ia datelor Ã®nainte de a le prelucra ?i afi?a Ã®n cererea principal?. 
 
 
 
 
 --13.1 
---?terge toate înregistr?rile din tabela ADUGA care au o dat? de ad?ugare mai recent? decât 
---anul în care a fost ad?ugat? prima dat? o înregistrare în tabela ADAUGA."
+--?terge toate Ã®nregistr?rile din tabela ADUGA care au o dat? de ad?ugare mai recent? decÃ¢t 
+--anul Ã®n care a fost ad?ugat? prima dat? o Ã®nregistrare Ã®n tabela ADAUGA."
 
 DELETE FROM ADAUGA
 WHERE EXTRACT(YEAR FROM data_adaugare) > (
@@ -142,7 +142,7 @@ WHERE ID_produs IN (
 
 --select * from produs 
 
---13.3 --Sa se actualizeze numele ora?ului în 'LA' pentru toate m?rcile care au sediul în Los Angeles. 
+--13.3 --Sa se actualizeze numele ora?ului Ã®n 'LA' pentru toate m?rcile care au sediul Ã®n Los Angeles. 
 
 UPDATE MARCA 
 SET sediu_marca = 'LA' 
