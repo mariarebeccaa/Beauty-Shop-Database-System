@@ -21,7 +21,6 @@ It includes full normalization (1NF, 2NF, 3NF), ER diagrams, conceptual diagrams
 
 - **Oracle SQL / PL/SQL**
 - **SQL Developer**
-- **WSL** (for development and testing)
 - **ER diagrams** (conceptual & logical design)
 
 ---
