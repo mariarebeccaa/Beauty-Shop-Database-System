@@ -82,6 +82,18 @@ The full project includes over 60 pages of documentation, covering:
 - Normalization examples  
 - Query explanations with results
 
+## 🚀 Extensions (Database Management Systems Project)
+
+Building upon the initial relational database project, this part extends the **Beauty Shop Database** with advanced Oracle PL/SQL features:
+
+- **Collections** (`VARRAY`, `Nested Table`, `Associative Array`)
+- **Cursors** (explicit & parameterized)
+- **Functions & Procedures** using multiple tables with exception handling
+- **Triggers**
+  - LMD (command & row level)
+  - LDD (DDL monitoring)
+
+These additions demonstrate database programming techniques and advanced transaction logic.
 
 
 
