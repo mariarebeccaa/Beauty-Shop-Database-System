@@ -1,0 +1,55 @@
+--7. CURSOARE
+
+CERINTA: Formulați în limbaj natural o problemă pe care să o rezolvați folosind un subprogram stocat independent care să utilizeze 2 tipuri diferite de cursoare studiate, unul dintre acestea fiind cursor parametrizat, dependent de celălalt cursor. Apelați subprogramul.
+
+ENUNT: Se dorește realizarea unui subprogram stocat independent care să afișeze, pentru fiecare categorie de produse din baza de date, lista produselor corespunzătoare.
+
+CREATE OR REPLACE PROCEDURE exercitiul7 IS
+    -- cursor explicit pt categorii
+    CURSOR c_categorii IS
+        SELECT id_categorie, nume_categorie
+        FROM CATEGORIE;
+
+    -- cursor implicit parametrizat pt produse
+    CURSOR c_produse(p_id_categorie CATEGORIE.id_categorie%TYPE) IS
+        SELECT nume_produs, pret_produs
+        FROM PRODUS
+        WHERE id_categorie = p_id_categorie;
+
+    -- variabile pt fetch din cursorul explicit
+    v_id_categorie CATEGORIE.id_categorie%TYPE;
+    v_nume_categorie CATEGORIE.nume_categorie%TYPE;
+BEGIN
+    OPEN c_categorii;
+    LOOP
+        FETCH c_categorii INTO v_id_categorie, v_nume_categorie;
+        EXIT WHEN c_categorii%NOTFOUND;
+
+        DBMS_OUTPUT.PUT_LINE('Categorie: ' || v_nume_categorie);
+
+        DECLARE
+            v_are_produse BOOLEAN := FALSE;
+        BEGIN
+            FOR prod IN c_produse(v_id_categorie) LOOP
+                v_are_produse := TRUE;
+                DBMS_OUTPUT.PUT_LINE(
+                    '-> Produs: ' || prod.nume_produs ||
+                    ' -> Pret: ' || prod.pret_produs
+                );
+            END LOOP;
+
+            IF NOT v_are_produse THEN
+                DBMS_OUTPUT.PUT_LINE('Categorie fara produse');
+            END IF;
+        END;
+
+        DBMS_OUTPUT.PUT_LINE('-------------------------');
+    END LOOP;
+    CLOSE c_categorii;
+END exercitiul7;
+/
+ 
+BEGIN
+    exercitiul7;
+END;
+/

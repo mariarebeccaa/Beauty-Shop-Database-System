@@ -1,0 +1,84 @@
+--6.COLECTII DE DATE
+CERINTA:  Formulați în limbaj natural o problemă pe care să o rezolvați folosind un subprogram stocat independent care să utilizeze toate cele 3 tipuri de colecții studiate. Apelați subprogramul.
+
+ENUNT: Se dorește realizarea unui subprogram stocat care, pentru o anumită categorie de produse, să afișeze: detaliile categoriei (nume și descriere) – gestionate printr-un index-by table; până la 3 produse din categoria respectivă – stocate într-un VARRAY;
+recenziile asociate acestor produse – stocate într-un nested table.
+
+
+
+CREATE OR REPLACE TYPE lista_recenzii AS TABLE OF VARCHAR2(100);
+/
+CREATE OR REPLACE TYPE vector_produse AS VARRAY(3) OF VARCHAR2(100);
+/
+
+CREATE OR REPLACE PROCEDURE exercitiul6(
+    p_id_categorie categorie.id_categorie%TYPE
+) IS
+    -- dictionar pt detalii categorie
+    TYPE detalii_categorie IS TABLE OF VARCHAR2(200) INDEX BY VARCHAR2(30);
+    v_categorie detalii_categorie;
+
+    -- varray pt maxim 3 produse din categorie
+    v_produse vector_produse := vector_produse();
+
+    -- lista pt recenzii ale produselor de mai sus selectate din categorie
+    v_recenzii lista_recenzii := lista_recenzii();
+BEGIN
+    -- A. Detalii categorie ( Nume: Descriere)
+    SELECT nume_categorie, descriere_categorie
+    INTO v_categorie('Nume'), v_categorie('Descriere')
+    FROM CATEGORIE
+    WHERE id_categorie = p_id_categorie;
+
+    DBMS_OUTPUT.PUT_LINE('Categorie: ' || v_categorie('Nume'));
+    DBMS_OUTPUT.PUT_LINE('Descriere: ' || v_categorie('Descriere'));
+
+    -- B. Produse (maxim 3 produse) din categoria resp.
+    SELECT nume_produs
+    BULK COLLECT INTO v_produse
+    FROM PRODUS
+    WHERE id_categorie = p_id_categorie
+    AND ROWNUM <= 3;
+
+    IF v_produse.COUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Nu sunt produse in aceasta categorie');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('-> Produse (cel mult 3)');
+        FOR i IN 1..v_produse.COUNT LOOP
+            DBMS_OUTPUT.PUT_LINE(v_produse(i));
+        END LOOP;
+    END IF;
+
+    -- C. Recenziile asociate produselor din v_produse
+    SELECT comentariu_recenzie
+    BULK COLLECT INTO v_recenzii
+    FROM RECENZIE
+    WHERE id_produs IN (
+        SELECT id_produs
+        FROM PRODUS
+        WHERE id_categorie = p_id_categorie
+        AND ROWNUM <= 3
+    );
+
+    IF v_recenzii.COUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Nu există recenzii pentru aceste produse');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('-> Recenzii ale produselor de mai sus');
+        FOR i IN 1..LEAST(v_recenzii.COUNT, 5) LOOP
+            DBMS_OUTPUT.PUT_LINE(v_recenzii(i));
+        END LOOP;
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Categoria nu exista');
+END exercitiul6;
+/
+ 
+BEGIN
+    exercitiul6(1);
+    exercitiul6(9999);
+END;
+/
+
+

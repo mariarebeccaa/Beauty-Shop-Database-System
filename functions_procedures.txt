@@ -1,0 +1,130 @@
+--8.  FUNCȚIE CARE UTILIZEAZĂ ÎNTR-O COMANDA SQL 3 TABELE
+
+CERINTA: Formulați în limbaj natural o problemă pe care să o rezolvați folosind un subprogram stocat independent de tip funcție care să utilizeze într-o singură comandă SQL 3 dintre tabelele create. Tratați toate excepțiile care pot apărea, incluzând excepțiile predefinite NO_DATA_FOUND și TOO_MANY_ROWS. Apelați subprogramul astfel încât să evidențiați toate cazurile tratate.
+
+ENUNȚ: Se dorește realizarea unei funcții stocate care, primind ca parametru numele unui produs, să returneze categoria din care face parte produsul respectiv și media rating-urilor primite din recenzii. Funcția va utiliza într-o singură comandă SQL tabelele PRODUS, CATEGORIE și RECENZIE. Dacă nu există produsul căutat, se va trata excepția NO_DATA_FOUND. Dacă interogarea returnează mai multe rânduri (de exemplu există mai multe produse cu același nume), se va trata excepția TOO_MANY_ROWS.
+
+CREATE OR REPLACE FUNCTION exercitiul8(
+    p_nume_produs PRODUS.nume_produs%TYPE
+) RETURN VARCHAR2 IS
+    v_rezultat VARCHAR2(500);
+BEGIN
+    -- interogare cu 3 tabele
+    SELECT 'Categorie: ' || c.nume_categorie ||
+           ', Media rating: ' || NVL(ROUND(AVG(r.rating_recenzie), 2), 0)
+    INTO v_rezultat
+    FROM PRODUS p
+    JOIN CATEGORIE c ON p.id_categorie = c.id_categorie
+    LEFT JOIN RECENZIE r ON p.id_produs = r.id_produs
+    WHERE p.nume_produs = p_nume_produs
+    GROUP BY c.nume_categorie;
+
+    RETURN v_rezultat;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN 'Nu exista produsul "' || p_nume_produs || '"';
+    WHEN TOO_MANY_ROWS THEN
+        RETURN 'Exista mai multe produse cu numele "' || p_nume_produs || '".';
+    WHEN OTHERS THEN
+        RETURN 'A aparut o eroare neasteptata: ' || SQLERRM;
+END exercitiul8;
+/
+ 
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(exercitiul8('Fond de ten'));
+END;
+/
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(exercitiul8('ProdusInexistent'));
+END;
+/
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(exercitiul8('Pudra compacta'));
+END;
+/
+
+
+
+
+--9. PROCEDURĂ CARE UTILIZEAZĂ ÎNTR-O SINGURĂ COMANDĂ SQL 5 TABELE
+
+CERINȚĂ: Formulați în limbaj natural o problemă pe care să o rezolvați folosind un subprogram stocat independent de tip procedură care să aibă minim 2 parametri și să utilizeze într-o singură comandă SQL 5 dintre tabelele create. Definiți minim 2 excepții proprii, altele decât cele predefinite la nivel de sistem. Apelați subprogramul astfel încât să evidențiați toate cazurile definite și tratate.
+
+ 
+
+ENUNȚ: Se dorește o procedură care, pentru un anumit client și o categorie de produse, să afișeze toate produsele comandate de acel client din categoria respectivă. Dacă clientul nu există, se va afișa un mesaj corespunzător. Dacă există clientul, dar nu a comandat produse din categoria respectivă, se va afișa un alt mesaj.
+
+CREATE OR REPLACE PROCEDURE exercitiul9(
+    p_id_client CLIENT.id_client%TYPE,
+    p_id_categorie CATEGORIE.id_categorie%TYPE
+) IS
+    -- definim exceptii proprii
+    ex_client_inexistent EXCEPTION;
+    ex_fara_produse      EXCEPTION;
+
+    v_nr_clienti  NUMBER;
+    v_nr_produse  NUMBER;
+BEGIN
+    -- verificare daca exista clientul
+    SELECT COUNT(*) INTO v_nr_clienti
+    FROM CLIENT
+    WHERE id_client = p_id_client;
+
+    IF v_nr_clienti = 0 THEN
+        RAISE ex_client_inexistent;
+    END IF;
+
+    -- verificare daca exista produse comandate din categoria respectiva
+    SELECT COUNT(*) INTO v_nr_produse
+    FROM CLIENT c
+    JOIN COMANDA co ON c.id_client = co.id_client
+    JOIN CONTINE con ON co.id_comanda = con.id_comanda
+    JOIN PRODUS p ON con.id_produs = p.id_produs
+    JOIN CATEGORIE cat ON p.id_categorie = cat.id_categorie
+    WHERE p_id_client = c.id_client 
+      AND p_id_categorie = cat.id_categorie;
+
+    IF v_nr_produse = 0 THEN
+        RAISE ex_fara_produse;
+    END IF;
+
+    -- afisare produse
+    FOR i IN (
+        SELECT p.nume_produs, p.pret_produs, co.data_comanda
+        FROM CLIENT c
+        JOIN COMANDA co ON c.id_client = co.id_client
+        JOIN CONTINE con ON co.id_comanda = con.id_comanda
+        JOIN PRODUS p ON con.id_produs = p.id_produs
+        JOIN CATEGORIE cat ON p.id_categorie = cat.id_categorie
+        WHERE p_id_client = c.id_client
+          AND p_id_categorie = cat.id_categorie
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE(
+            '-> ' || i.nume_produs ||
+            ' | Pret: ' || i.pret_produs ||
+            ' | Data: ' || TO_CHAR(i.data_comanda,'DD-MON-YYYY')
+        );
+    END LOOP;
+
+EXCEPTION
+    WHEN ex_client_inexistent THEN
+        DBMS_OUTPUT.PUT_LINE('Clientul cu id ' || p_id_client || ' nu exista');
+    WHEN ex_fara_produse THEN
+        DBMS_OUTPUT.PUT_LINE(
+            'Clientul ' || p_id_client ||
+            ' nu a comandat produse din categoria ' || p_id_categorie
+        );
+END exercitiul9;
+/
+ 
+BEGIN
+    exercitiul9(2,3);
+    exercitiul9(9999,2);
+    exercitiul9(1,9999);
+END;
+/
+--select * from comanda;
+--select * from contine;
+--select * from produs;
+ 

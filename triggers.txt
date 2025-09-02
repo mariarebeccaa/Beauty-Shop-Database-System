@@ -1,0 +1,92 @@
+
+--10. TRIGGER DE TIP LMD – LA NIVEL DE COMANDĂ
+
+ 
+
+CERINȚĂ: Definiți un trigger de tip LMD la nivel de comandă. Declanșați trigger-ul.
+
+ENUNȚ: Să se creeze un trigger de tip LMD la nivel de comandă care să auditeze inserările în tabela COMANDA. Trigger-ul va afișa un mesaj care indică numărul total de comenzi după fiecare inserare.
+
+Explicație:
+Acest trigger se declanșează o singură dată după executarea unei comenzi INSERT pe tabela COMANDA, indiferent de numărul de linii inserate. Scopul său este de a oferi o statistică simplă despre numărul total de comenzi din sistem.
+
+-- Trigger care se declanseaza o singura data dupa insert in COMANDA
+CREATE OR REPLACE TRIGGER audit_comenzi
+AFTER INSERT ON COMANDA
+DECLARE
+    v_total_comenzi NUMBER;
+BEGIN
+    -- nr cate comenzi exista in total
+    SELECT COUNT(*) INTO v_total_comenzi FROM COMANDA;
+    DBMS_OUTPUT.PUT_LINE('S-a adaugat o noua comanda. Total comenzi: ' || v_total_comenzi);
+END audit_comenzi;
+/
+ 
+-- declansare
+INSERT INTO COMANDA (ID_comanda, data_comanda, adresa_livrare, status_comanda, ID_client)
+VALUES (1001, SYSDATE, 'Strada Exemplu, Nr. 10', 'în procesare', 1);
+
+ 
+
+--11.  TRIGGER DE TIP LMD – LA NIVEL DE LINIE
+
+ 
+
+CERINȚĂ: Definiți un trigger de tip LMD la nivel de linie. Declanșați trigger-ul.
+
+ENUNȚ: Să se creeze un trigger de tip LMD la nivel de linie care să valideze rating-ul inserat în tabela RECENZIE. Rating-ul trebuie să fie între 1 și 5. Dacă se încearcă inserarea unui rating invalid, se va genera o eroare.
+
+Explicație: Acest trigger se declanșează pentru fiecare linie inserată în tabela RECENZIE. Scopul său este de a asigura integritatea datelor prin validarea că rating-ul recenziei se încadrează în intervalul permis (1-5 stele).
+
+-- Trigger care se declanseaza pentru fiecare linie inserata in RECENZIE
+CREATE OR REPLACE TRIGGER validare_rating
+BEFORE INSERT ON RECENZIE
+FOR EACH ROW
+BEGIN
+    -- Verif daca rating-ul este intre 1 si 5
+    IF :NEW.rating_recenzie < 1 OR :NEW.rating_recenzie > 5 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Rating-ul trebuie sa fie intre 1 si 5');
+    END IF;
+
+    DBMS_OUTPUT.PUT_LINE('Recenzie validata pt produsul ID: ' || :NEW.ID_produs);
+END validare_rating;
+/
+ 
+-- Test cu rating valid
+INSERT INTO RECENZIE (ID_recenzie, rating_recenzie, comentariu_recenzie, data_recenzie, ID_client, ID_produs)
+VALUES (11, 4, 'Foarte bun', SYSDATE, 1, 1);
+ 
+-- Test cu rating invalid (va da eroare)
+INSERT INTO RECENZIE (ID_recenzie, rating_recenzie, comentariu_recenzie, data_recenzie, ID_client, ID_produs)
+VALUES (12, 7, 'Prea bun', SYSDATE, 1, 1);
+
+
+
+
+
+--12.  TRIGGER DE TIP LDD
+
+CERINȚĂ: Definiți un trigger de tip LDD. Declanșați trigger-ul.
+
+ENUNȚ: Să se creeze un trigger de tip LDD care să monitorizeze operațiile de creare, modificare sau ștergere de tabele (CREATE, ALTER, DROP). Trigger-ul va afișa un mesaj care arată ce operație s-a făcut, cum se numește obiectul și ce tip de obiect a fost afectat.
+
+-- Trigger care se declanseaza la orice operatie de DDL (CREATE, ALTER, DROP) 
+CREATE OR REPLACE TRIGGER trigger_ddl
+AFTER DDL ON DATABASE
+BEGIN
+    DBMS_OUTPUT.PUT_LINE(
+        'S-a executat o operatie DDL: ' || ORA_SYSEVENT ||
+        ' pe obiectul: ' || ORA_DICT_OBJ_NAME ||
+        ' de tip: ' || ORA_DICT_OBJ_TYPE
+    );
+END trigger_ddl;
+/
+ 
+CREATE TABLE tabel_test (
+    id NUMBER,
+    nume VARCHAR2(50)
+);
+ 
+ALTER TABLE tabel_test ADD descriere VARCHAR2(100);
+ 
+DROP TABLE tabel_test;
