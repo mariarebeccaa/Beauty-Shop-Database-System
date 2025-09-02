@@ -119,7 +119,7 @@ VALUES (seq_marca_id.NEXTVAL, 'PureGlow', 'Toronto', 'Canada', 'contact@pureglow
 
 
 INSERT INTO MARCA (ID_marca, nume_marca, sediu_marca_oras, sediu_marca_tara, contact_marca, website_marca)  
-VALUES (seq_marca_id.NEXTVAL, 'Radiant Glow', 'São Paulo', 'Brazil', 'info@radiantglow.br', 'https://www.radiantglow.br'); 
+VALUES (seq_marca_id.NEXTVAL, 'Radiant Glow', 'SÄƒo Paulo', 'Brazil', 'info@radiantglow.br', 'https://www.radiantglow.br'); 
   
 
 COMMIT; 
@@ -156,13 +156,13 @@ CREATE TABLE CATEGORIE (
     descriere_categorie VARCHAR2(100)
 ); 
 
-INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Ingrijirea pielii', 'Produse pentru îngrijirea pielii');
-INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Ingrijirea parului', 'Produse pentru îngrijirea p?rului');
+INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Ingrijirea pielii', 'Produse pentru Ã®ngrijirea pielii');
+INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Ingrijirea parului', 'Produse pentru Ã®ngrijirea p?rului');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Machiaj', 'Produse pentru machiaj');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Parfumuri', 'Parfumuri pentru diverse ocazii');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Accesorii machiaj', 'Accesorii pentru aplicarea machiajului');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Tratamente cosmetice', 'Tratemente pentru diferite probleme ale pielii');
-INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Accesorii parului', 'Accesorii pentru îngrijirea ?i stilizarea p?rului');
+INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Accesorii parului', 'Accesorii pentru Ã®ngrijirea ?i stilizarea p?rului');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Machiaj profesional', 'Produse de machiaj de calitate profesional?');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Parfumuri de lux', 'Parfumuri de lux pentru ocazii speciale');
 INSERT INTO CATEGORIE (ID_categorie, nume_categorie, descriere_categorie) VALUES (seq_categorie_id.NEXTVAL, 'Accesorii machiaj art.', 'Accesorii de machiaj de art? ?i specializate');
